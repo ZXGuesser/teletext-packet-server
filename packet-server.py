@@ -34,7 +34,7 @@ def server(HOST,PORT):
     sock.close()
 
 if __name__ == "__main__":
-    HOST = "localhost"
+    HOST = ""
     PORT = 0
     linesPerField = 0
     
