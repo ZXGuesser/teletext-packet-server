@@ -21,10 +21,22 @@ class client(object):
         clientQueues.remove(q)
         clientsocket.close()
 
-def server(HOST,PORT):
+def server(PORT):
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     sock.setsockopt(socket.SOL_SOCKET, socket.SO_SNDBUF, 672)
-    sock.bind((HOST,PORT))
+    sock.bind(("",PORT))
+    sock.listen()
+    while True:
+        conn, addr = sock.accept()
+        q = queue.Queue()
+        cthread = threading.Thread(target=client.clientConected, args=(conn,addr,q))
+        cthread.start()
+    sock.close()
+
+def server6(PORT):
+    sock = socket.socket(socket.AF_INET6, socket.SOCK_STREAM)
+    sock.setsockopt(socket.SOL_SOCKET, socket.SO_SNDBUF, 672)
+    sock.bind(("",PORT))
     sock.listen()
     while True:
         conn, addr = sock.accept()
@@ -34,7 +46,6 @@ def server(HOST,PORT):
     sock.close()
 
 if __name__ == "__main__":
-    HOST = ""
     PORT = 0
     linesPerField = 0
     
@@ -66,9 +77,13 @@ if __name__ == "__main__":
         print("invalid lines per field, use -l <lines per field>")
         sys.exit(2)
     
-    thread = threading.Thread(target = server, args=(HOST,PORT))
+    thread = threading.Thread(target = server, args=(PORT,))
     thread.daemon = True
     thread.start()
+    
+    thread6 = threading.Thread(target = server6, args=(PORT,))
+    thread6.daemon = True
+    thread6.start()
     
     starttime=time.time()
     
