@@ -9,7 +9,7 @@ test.py is a test client which connects to the server and outputs packets to std
 The port is set using the -p argument, and the number of lines per field by -l
 
 The server can be tested using example.t42:  
-`(while cat example.t42; do :; done) | python packet-server.py -p 19761 -l 16`
+`(while cat example.t42; do :; done) | python3 packet-server.py -p 19761 -l 16`
 
 A suitable packet stream can be generated using https://github.com/peterkvt80/vbit2  
-For example: `~/vbit2/vbit2 --dir ~/teletext | python packet-server.py -p 19761 -l 16`
+For example: `~/vbit2/vbit2 --dir ~/teletext | python3 packet-server.py -p 19761 -l 16`
