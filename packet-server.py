@@ -24,7 +24,7 @@ class client(object):
 def server(PORT):
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     sock.setsockopt(socket.SOL_SOCKET, socket.SO_SNDBUF, 672)
-    sock.bind(("",PORT))
+    sock.bind(("0.0.0.0",PORT))
     sock.listen()
     while True:
         conn, addr = sock.accept()
@@ -36,7 +36,13 @@ def server(PORT):
 def server6(PORT):
     sock = socket.socket(socket.AF_INET6, socket.SOCK_STREAM)
     sock.setsockopt(socket.SOL_SOCKET, socket.SO_SNDBUF, 672)
-    sock.bind(("",PORT))
+    # Python2.7.3 on Windows does not define IPPROTO_IPV6,
+    # see http://bugs.python.org/issue6926.
+    try:
+        sock.setsockopt(socket.IPPROTO_IPV6, socket.IPV6_V6ONLY, 1)
+    except AttributeError:
+        pass
+    sock.bind(("::",PORT))
     sock.listen()
     while True:
         conn, addr = sock.accept()
