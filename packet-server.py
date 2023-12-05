@@ -54,9 +54,10 @@ def server6(PORT):
 if __name__ == "__main__":
     PORT = 0
     linesPerField = 0
+    inputfile = sys.stdin
     
     try:
-        opts, args = getopt.getopt(sys.argv[1:],"p:l:")
+        opts, args = getopt.getopt(sys.argv[1:],"p:l:i:")
     except getopt.GetoptError as err:
         print(err)
         sys.exit(2)
@@ -73,6 +74,12 @@ if __name__ == "__main__":
                 linesPerField = int(arg)
             except:
                 print("invalid lines per field")
+                sys.exit(2)
+        elif opt in ('-i'):
+            try:
+                inputfile = open(arg, "r")
+            except:
+                print("failed to open file")
                 sys.exit(2)
     
     if PORT <= 1024 or PORT > 65535:
@@ -94,7 +101,9 @@ if __name__ == "__main__":
     starttime=time.time()
     
     while(True):
-        data = bytearray(sys.stdin.buffer.read(42 * linesPerField))
+        data = bytearray(inputfile.buffer.read(42 * linesPerField))
+        if not data:
+            inputfile.seek(0) # loop input file
         if (linesPerField < 16):
             data.extend(bytearray(42*(16-linesPerField)))
         for q in clientQueues[:]:
