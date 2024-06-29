@@ -104,6 +104,10 @@ if __name__ == "__main__":
         data = bytearray(inputfile.buffer.read(42 * linesPerField))
         if not data:
             inputfile.seek(0) # loop input file
+            continue
+        if (linesPerField < 16):
+            data.extend(bytearray(42*(16-linesPerField)))
+        data.extend(bytearray(inputfile.buffer.read(42 * linesPerField)))
         if (linesPerField < 16):
             data.extend(bytearray(42*(16-linesPerField)))
         for q in clientQueues[:]:
@@ -111,4 +115,4 @@ if __name__ == "__main__":
                 with q.mutex:
                     q.queue.clear()
             q.put(data)
-        time.sleep(0.02 - ((time.time() - starttime) % 0.02))
+        time.sleep(0.04 - ((time.time() - starttime) % 0.04))
